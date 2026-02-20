@@ -1,0 +1,11 @@
+# Claves privadas
+broker/certs/*.key
+
+# Archivos temporales CSR
+broker/certs/*.csr
+
+# Serial file
+broker/certs/*.srl
+
+# Entorno virtual
+python_app/venv/
