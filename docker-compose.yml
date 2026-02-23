@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+
+  broker:
+    build: ./broker
+    container_name: mqtt-broker
+    ports:
+      - "8883:8883"
+    volumes:
+      - ./broker/certs:/mosquitto/certs
+    networks:
+      - mqtt-net
+
+  sensor_temp:
+    build: ./sensores
+    container_name: sensor-temp
+    command: python sensorTemp.py
+    depends_on:
+      - broker
+    volumes:
+      - ./sensores/certs:/app/certs
+    networks:
+      - mqtt-net
+
+  sensor_hum:
+    build: ./sensores
+    container_name: sensor-hum
+    command: python sensorHumedad.py
+    depends_on:
+      - broker
+    volumes:
+      - ./sensores/certs:/app/certs
+    networks:
+      - mqtt-net
+
+  sensor_vib:
+    build: ./sensores
+    container_name: sensor-vib
+    command: python sensorVibracion.py
+    depends_on:
+      - broker
+    volumes:
+      - ./sensores/certs:/app/certs
+    networks:
+      - mqtt-net
+
+  backend:
+    build: 
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: mqtt-backend
+    depends_on:
+      - broker
+      - mysql
+    volumes:
+      - ./back/certs:/app/certs
+    networks:
+      - mqtt-net
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sensores
+    volumes:
+      - ./MySQL/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mqtt-net
+
+  front:
+    build: ./front
+    container_name: web-front
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - mqtt-net
+
+networks:
+  mqtt-net:
+    driver: bridge

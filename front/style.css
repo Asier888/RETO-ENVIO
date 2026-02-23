@@ -1,0 +1,82 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+#sensors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sensor {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sensor:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.sensor h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.4em;
+}
+
+.temperatura-card h2 { color: #ff6b6b; }
+.humedad-card h2 { color: #4ecdc4; }
+.vibracion-card h2 { color: #ffa502; }
+
+.value {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 12px 0;
+  color: #555;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.temperatura-card .value {
+  border-left-color: #ff6b6b;
+  color: #d32f2f;
+}
+
+.humedad-card .value {
+  border-left-color: #4ecdc4;
+  color: #00796b;
+}
+
+.vibracion-card .value {
+  border-left-color: #ffa502;
+  color: #e65100;
+}
+
+.timestamp {
+  font-size: 0.85em;
+  color: #999;
+  margin-top: 12px;
+  font-style: italic;
+}
