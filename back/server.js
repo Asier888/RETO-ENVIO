@@ -14,21 +14,31 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// Conexión MySQL
-const db = mysql.createConnection({
-  host: 'mysql-db',    // Contenedor MySQL en Docker
+// Conexión MySQL con reintentos
+const dbConfig = {
+  host: 'mysql',    // usar el nombre del servicio Docker-compose
   user: 'root',
   password: 'root',
   database: 'sensores'
-});
+};
 
-db.connect(err => {
-  if (err) {
-    console.error('Error conectando a MySQL:', err);
-    process.exit(1);
-  }
-  console.log('Conectado a la base de datos MySQL');
-});
+let db;
+function connectWithRetry(retries = 0) {
+  db = mysql.createConnection(dbConfig);
+
+  db.connect(err => {
+    if (err) {
+      const wait = Math.min(5000 + retries * 1000, 30000);
+      console.error(`Error conectando a MySQL (intento ${retries + 1}):`, err.message || err);
+      console.log(`Reintentando en ${wait} ms...`);
+      setTimeout(() => connectWithRetry(retries + 1), wait);
+      return;
+    }
+    console.log('Conectado a la base de datos MySQL');
+  });
+}
+
+connectWithRetry();
 
 // Cuando un cliente WebSocket se conecta
 wss.on('connection', (ws) => {
