@@ -68,9 +68,9 @@ function renderSensors() {
     card.className = 'sensor vibracion-card';
     card.innerHTML = `
       <h2>📊 Vibración</h2>
-      <div class="value">X: ${sensorData.vibracion_x.toFixed(3)} g</div>
-      <div class="value">Y: ${sensorData.vibracion_y.toFixed(3)} g</div>
-      <div class="value">Z: ${sensorData.vibracion_z.toFixed(3)} g</div>
+      <div class="value">X: ${sensorData.vibracion_x.toFixed(3)} m/s²</div>
+      <div class="value">Y: ${sensorData.vibracion_y.toFixed(3)} m/s²</div>
+      <div class="value">Z: ${sensorData.vibracion_z.toFixed(3)} m/s²</div>
       <div class="timestamp">${new Date(sensorData.timestamp).toLocaleString('es-ES')}</div>
     `;
     sensorsDiv.appendChild(card);

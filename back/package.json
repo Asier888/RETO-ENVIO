@@ -1,7 +1,7 @@
 {
   "name": "mqtt-backend",
   "version": "1.0.0",
-  "description": "Backend subscriber MQTT con TLS y MySQL",
+  "description": "Backend MQTT con TLS y MySQL",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

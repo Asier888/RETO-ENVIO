@@ -14,31 +14,24 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// Conexión MySQL con reintentos
+// Usamos un pool de conexiones, que reconecta automáticamente en caso de caída
 const dbConfig = {
-  host: 'mysql',    // usar el nombre del servicio Docker-compose
+  host: 'mysql',
   user: 'root',
   password: 'root',
-  database: 'sensores'
+  database: 'sensores',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 };
 
-let db;
-function connectWithRetry(retries = 0) {
-  db = mysql.createConnection(dbConfig);
+const db = mysql.createPool(dbConfig);
 
-  db.connect(err => {
-    if (err) {
-      const wait = Math.min(5000 + retries * 1000, 30000);
-      console.error(`Error conectando a MySQL (intento ${retries + 1}):`, err.message || err);
-      console.log(`Reintentando en ${wait} ms...`);
-      setTimeout(() => connectWithRetry(retries + 1), wait);
-      return;
-    }
-    console.log('Conectado a la base de datos MySQL');
-  });
+// manejar errores fatales de conexión
+function handleDbError(err) {
+  console.error('MySQL pool error:', err);
 }
-
-connectWithRetry();
+db.on('error', handleDbError);
 
 // Cuando un cliente WebSocket se conecta
 wss.on('connection', (ws) => {
@@ -64,6 +57,7 @@ const mqttOptions = {
   ca: fs.readFileSync('./certs/ca.crt'),
   cert: fs.readFileSync('./certs/backend.crt'),
   key: fs.readFileSync('./certs/backend.key'),
+  //permite autofirmado
   rejectUnauthorized: false
 };
 
